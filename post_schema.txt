@@ -1,0 +1,49 @@
+db.createCollection("posts", {
+   validator: {
+      $jsonSchema: {
+         bsonType: "object",
+         title: "Post Object Validation",
+         required: [ "author_id", "author_name", "contents", "creation_ts" ],
+         properties: {
+            author_id: {
+               bsonType: "string",
+               description: "author id must be a string and is required"
+            },
+            author_name: {
+               bsonType: "string",
+               description: "author id must be a string and is required"
+            },
+            contents: {
+               bsonType: ["array"],
+               minItems:1,
+               description: "content must be a collection of strings: text and gridfs uri and is required",
+               items: {
+               	bsonType: "object",
+               	properties: {
+               		text:{
+               			bsonType:"string",
+               			description: "chunk of text"
+               		},
+               		media:{
+               			bsonType:"string",
+               			description: "reference to media"
+               		}
+               	}
+               }
+            },
+            creation_ts: {
+            	bsonType: "string",
+            	description: "'timestamp' must be a string and is required"
+            },
+            update_ts: {
+            	bsonType: "string",
+            	description: "'timestamp' must be a string and is required"
+            },
+            title: {
+            	bsonType: "string",
+               description: "title must be a string and is required"
+            }
+         }
+      }
+   }
+} );
