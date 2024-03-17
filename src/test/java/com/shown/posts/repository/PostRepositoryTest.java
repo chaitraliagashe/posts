@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,6 @@ class PostRepositoryTest {
 	void test() {
 		Content content = new Content("This is a trial text blog", null);
 		Post post = new Post(
-				UUID.randomUUID().toString(),
 				"testUser",
 				"Test User",
 				new ArrayList<Content>(List.of(content)), "Test Blog"

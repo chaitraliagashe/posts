@@ -77,7 +77,7 @@ public class PostController {
 	}
 	
 	@ResponseStatus(HttpStatus.NO_CONTENT) // 204
-	@DeleteMapping("/posts/delete")
+	@DeleteMapping("/posts/deletePost")
 	public void deletePost(@RequestParam(value = "id") String id) {
 		postService.delete(id);
 	}
