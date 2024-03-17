@@ -33,8 +33,7 @@ public class Post {
 	private String title;
 	
 	
-	public Post(String id, String authorId, String authorName, List<Content> contents, String title) {
-		this.id = id;
+	public Post(String authorId, String authorName, List<Content> contents, String title) {
 		this.authorId = authorId;
 		this.authorName = authorName;
 		this.contents = contents;
