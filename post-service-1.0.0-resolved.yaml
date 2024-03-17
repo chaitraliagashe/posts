@@ -1,0 +1,148 @@
+---
+openapi: 3.0.0
+info:
+  title: Simple Post API
+  description: This is a simple API to create, read, update and delete blogs api.
+  contact:
+    email: chaitraliagashe@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/ckulkarni/post-service/1.0.0
+  description: SwaggerHub API Auto Mocking
+paths:
+  /posts/getPostsFromAuthor:
+    get:
+      summary: returns a list of blogs posts written by an author
+      description: |
+        By passing in the author name, we can get the blog posts written by an author. This can be further enhanced to do an approximate search.
+      operationId: getPostsFromAuthor
+      parameters:
+      - name: authorName
+        in: query
+        description: pass an author name to search blogs written by them
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Blog posts written by the author
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        "400":
+          description: bad input parameter
+  /posts/getPostsByTitle:
+    get:
+      summary: returns the first blogs post with given title
+      description: |
+        By passing in the title, we can get the blog post with this title. This can be further enhanced when we can provide multiple posts with same title..
+      operationId: getPostsByTitle
+      parameters:
+      - name: title
+        in: query
+        description: pass an title me to search blogs written by them
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Blog posts written by the author
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        "400":
+          description: bad input parameter
+  /posts/create:
+    post:
+      summary: creates a blog post
+      description: creates a blog post
+      operationId: createPost
+      requestBody:
+        description: Blog Post to add 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+      responses:
+        "201":
+          description: item created
+        "4XX":
+          description: "invalid input, object invalid"
+  /posts/update:
+    post:
+      summary: updates a blog post
+      description: update a blog post
+      operationId: updatePost
+      requestBody:
+        description: Blog Post to be updated 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+      responses:
+        "201":
+          description: item created
+        "4XX":
+          description: "invalid input, object invalid"
+  /posts/delete:
+    post:
+      summary: deletes a blog post
+      description: deletes a blog post
+      operationId: deletePost
+      parameters:
+      - name: id
+        in: query
+        description: pass id of the post to be deleted
+        required: true
+        schema:
+          type: string
+      responses:
+        "201":
+          description: item created
+        "4XX":
+          description: "invalid input, object invalid"
+components:
+  schemas:
+    Post:
+      required:
+      - content
+      - authorId
+      - authorName
+      type: object
+      properties:
+        id:
+          type: string
+          example: internal document id of post
+        creationTs:
+          type: string
+          example: 2024-03-17T01:16:01.274087200
+        updateTs:
+          type: string
+          example: 2024-03-17T01:16:01.274087200
+        content:
+          $ref: '#/components/schemas/Manufacturer'
+        authorId:
+          type: string
+          example: user123@company.com
+        authorName:
+          type: string
+          example: john doe
+    Content:
+      type: object
+      properties:
+        text:
+          type: string
+          example: Represents text chunk in the blog, can be a section in Markdown
+        media:
+          type: string
+          format: URI
+          example: Identifier of the media uploaded - can be s3 path, gridfs id
