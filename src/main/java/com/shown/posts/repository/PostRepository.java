@@ -7,6 +7,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import com.shown.posts.model.Post;
 
 public interface PostRepository extends MongoRepository<Post, String>{
-	public Post findByTitle(String title);
+	public List<Post> findByTitle(String title);
 	public List<Post> findByAuthorName(String authorName);
 }

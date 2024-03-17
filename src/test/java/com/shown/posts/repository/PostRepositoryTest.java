@@ -30,7 +30,7 @@ class PostRepositoryTest {
 				new ArrayList<Content>(List.of(content)), "Test Blog"
 			);
 		Post addedPost = repository.save(post);
-		Post fetchedPost = repository.findByTitle("Test Blog");
+		Post fetchedPost = repository.findByTitle("Test Blog").get(0);
 		assertEquals(addedPost.getId(), fetchedPost.getId());
 		List<Content> currentContents = addedPost.getContents();
 		currentContents.add(new Content("This does not content more informatio", null));
