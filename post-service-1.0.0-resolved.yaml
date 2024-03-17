@@ -13,6 +13,30 @@ servers:
 - url: https://virtserver.swaggerhub.com/ckulkarni/post-service/1.0.0
   description: SwaggerHub API Auto Mocking
 paths:
+  /posts/getPostById:
+    get:
+      summary: returns a blogs post by id
+      description: |
+        Returns a blog post by id.
+      operationId: getPostById
+      parameters:
+      - name: id
+        in: query
+        description: pass blog id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Blog posts written by the author
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        "400":
+          description: bad input parameter
   /posts/getPostsFromAuthor:
     get:
       summary: returns a list of blogs posts written by an author
