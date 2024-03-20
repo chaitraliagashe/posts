@@ -1,0 +1,27 @@
+db.createCollection("comments", {
+   validator: {
+      $jsonSchema: {
+         bsonType: "object",
+         title: "Comment Object Validation",
+         required: [ "post_id", "author_id", "contents", "creation_ts"],
+         properties: {
+            post_id: {
+               bsonType: "string",
+               description: "post id must be a string and is required"
+            },
+            author_id: {
+               bsonType: "string",
+               description: "author id must be a string and is required"
+            },
+            contents: {
+               bsonType: "string",
+               description: "content must be string",
+            },
+            creation_ts: {
+            	bsonType: "string",
+            	description: "'timestamp' must be a string and is required"
+            }
+         }
+      }
+   }
+} );
