@@ -32,4 +32,8 @@ public class PostRepositoryService {
 	public Post findPostById(String id) {
 		return repository.findById(id).orElseThrow();
 	}
+	
+	public List<Post> findPostsbyIds(List<String> postIds) {
+		return repository.findAllById(postIds);
+	}
 }
