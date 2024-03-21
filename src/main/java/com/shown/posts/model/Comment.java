@@ -24,7 +24,7 @@ public class Comment {
 	@Field(value = "creation_ts")
 	private String creationTs;
 
-	public Comment(String postId, String authorId, String contents, String creationTs) {
+	public Comment(String postId, String authorId, String contents) {
 		this.postId = postId;
 		this.authorId = authorId;
 		this.contents = contents;
