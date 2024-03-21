@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public class CommentsRepositoryService {
 			if(hours < 1) {
 				return repository.save(comment);
 			} else {
-				throw new IllegalArgumentException("Comment can no longer be updated");
+				throw new DataIntegrityViolationException("Comment can no longer be updated");
 			}
 		} else {
 			return repository.save(comment);

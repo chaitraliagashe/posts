@@ -85,6 +85,30 @@ paths:
                   $ref: '#/components/schemas/Post'
         "400":
           description: bad input parameter
+  /posts/getCommentsByPostId:
+    get:
+      summary: returns a comments for a blog post
+      description: |
+        Returns comments for a blog post by given blog post id
+      operationId: getPostById
+      parameters:
+      - name: postId
+        in: query
+        description: pass blog id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Blog posts written by the author
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        "400":
+          description: bad input parameter
   /posts/create:
     post:
       summary: creates a blog post
@@ -134,6 +158,55 @@ paths:
           description: item created
         "4XX":
           description: "invalid input, object invalid"
+  /posts/createComment:
+    post:
+      summary: creates a comment on a post
+      description: creates a comment on a post
+      operationId: createComment
+      requestBody:
+        description: Comment to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        "201":
+          description: item created
+        "4XX":
+          description: "invalid input, object invalid"
+          
+  /posts/updateComment:
+    post:
+      summary: updates a blog post comment only within 1 hour
+      description: update a blog post comment only within 1 hour. The comments from other users can not be updated.
+      operationId: updateComment
+      requestBody:
+        description: Comment to be updated 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        "201":
+          description: item created
+        "4XX":
+          description: "invalid input, object invalid, unauthorized"  
+  /posts/deleteComment:
+    post:
+      summary: updates a blog post comment only within 1 hour
+      description: update a blog post comment only within 1 hour. The comments from other users can not be deleted.
+      operationId: updateComment
+      requestBody:
+        description: Comment to be updated 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        "201":
+          description: item created
+        "4XX":
+          description: "invalid input, object invalid, unauthorized"        
 components:
   schemas:
     Post:
@@ -146,12 +219,6 @@ components:
         id:
           type: string
           example: internal document id of post
-        creationTs:
-          type: string
-          example: 2024-03-17T01:16:01.274087200
-        updateTs:
-          type: string
-          example: 2024-03-17T01:16:01.274087200
         content:
           $ref: '#/components/schemas/Manufacturer'
         authorId:
@@ -170,3 +237,16 @@ components:
           type: string
           format: URI
           example: Identifier of the media uploaded - can be s3 path, gridfs id
+    Comment:
+      required:
+      - content
+      - authorId
+      - postId
+      type: object
+      properties:
+        id:
+          type: string
+          example: internal document id of post
+        authorId:
+          type: string
+          example: user123@company.com
