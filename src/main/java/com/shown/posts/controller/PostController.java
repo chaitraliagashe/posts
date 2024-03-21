@@ -69,6 +69,16 @@ public class PostController {
 		}
 		return posts.get(0);
 	}
+	
+	@GetMapping("/posts/getPostsByIds")
+	public List<Post> getPostsById(@RequestBody List<String> ids) {
+		try {
+			return postService.findPostsbyIds(ids);
+		} catch(Exception e) {
+			logger.error("Error finding the blog", e);
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Popular blog posts could not be found for ids %s", ids));
+		}
+	}
 
 	@ResponseStatus(HttpStatus.CREATED) // 201
 	@PostMapping("/posts/create")
