@@ -69,8 +69,9 @@ public class PostController {
 		}
 		return posts.get(0);
 	}
+	
 	@GetMapping("/posts/getPostsByIds")
-	public List<Post> getPostsById(@RequestBody List<String> ids) {
+	public List<Post> getPostsById(@RequestParam(value = "ids") List<String> ids) {
 		try {
 			return postService.findPostsbyIds(ids);
 		} catch(Exception e) {
