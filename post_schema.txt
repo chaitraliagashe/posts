@@ -51,4 +51,3 @@ db.createCollection("posts", {
 use blogs;
 db.posts.createIndex({title : 1});
 db.posts.createIndex({author_name : 1});
-db.comments.createIndex({ post_id : 1});

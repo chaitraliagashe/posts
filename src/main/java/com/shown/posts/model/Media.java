@@ -2,33 +2,40 @@ package com.shown.posts.model;
 
 import java.time.LocalDateTime;
 
+import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document("comments")
-public class Comment {
+@Document(collection = "media")
+public class Media {
 	@Id
 	private String id;
 	
 	@Field(value = "post_id")
 	private String postId;
 	
-	@Field(value = "author_id")
-	private String authorId;
+	@Field(value = "title")
+	private String title;
 	
 	@Field(value = "contents")
-	private String contents;
+	private Binary contents;
 	
 	@Field(value = "creation_ts")
 	private String creationTs;
 
-	public Comment(String postId, String authorId, String contents) {
+	public Media(String postId, String title, Binary contents) {
 		this.postId = postId;
-		this.authorId = authorId;
+		this.title = title;
 		this.contents = contents;
 		this.creationTs = LocalDateTime.now().toString();
 	}
+
+	
+	public Media() {
+		super();
+	}
+
 
 	public String getId() {
 		return id;
@@ -46,19 +53,19 @@ public class Comment {
 		this.postId = postId;
 	}
 
-	public String getAuthorId() {
-		return authorId;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setAuthorId(String authorId) {
-		this.authorId = authorId;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
-	public String getContents() {
+	public Binary getContents() {
 		return contents;
 	}
 
-	public void setContents(String contents) {
+	public void setContents(Binary contents) {
 		this.contents = contents;
 	}
 
@@ -69,6 +76,4 @@ public class Comment {
 	public void setCreationTs(String creationTs) {
 		this.creationTs = creationTs;
 	}
-	
-	
 }
