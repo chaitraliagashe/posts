@@ -1,13 +1,14 @@
 package com.shown.posts.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,8 +21,12 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.shown.posts.PostsApplication;
@@ -29,6 +34,7 @@ import com.shown.posts.model.Comment;
 import com.shown.posts.model.Content;
 import com.shown.posts.model.Post;
 import com.shown.posts.repository.CommentsRepository;
+import com.shown.posts.repository.MediaRepository;
 import com.shown.posts.repository.PostRepository;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = PostsApplication.class)
@@ -42,6 +48,8 @@ class PostControllerTest {
     private PostRepository postRepository;
 	@Autowired
 	private CommentsRepository commentsRepository;
+	@Autowired
+	private MediaRepository mediaRepository;
 	
 	Post addedPost;
 	Comment addedComment;
@@ -139,6 +147,29 @@ class PostControllerTest {
 				.content(objectMapper.writeValueAsBytes(addedComment))
 				.header("X-API-KEY", "9H3hyCBR"))
 			.andExpect(status().is4xxClientError());
+	}
+	
+	@Test
+	void testUploadMediaByPostIdAndGetMediaById() throws Exception {
+		FileInputStream inputFile = new FileInputStream(getClass().getClassLoader().getResource("coffee.jpg").getFile());  
+		MockMultipartFile file = new MockMultipartFile("content", "coffee", "multipart/form-data", inputFile);
+		MvcResult result = mvc.perform(multipart(HttpMethod.POST, "/posts/uploadMediaByPostId")
+				.file(file)
+				.param("postId", "a123")
+				.param("title", "Coffe time!!")
+				.header("X-API-KEY", "9H3hyCBR"))
+			.andExpect(status().isCreated())
+			.andReturn();
+		String json = result.getResponse().getContentAsString();
+		String[] resultPaths = json.split(":");
+		mvc.perform(get("/posts/getMediaById")
+										.param("id", resultPaths[1])
+										.contentType(MediaType.APPLICATION_JSON)
+										.header("X-API-KEY", "9H3hyCBR"))
+								.andExpect(status().isOk())
+								.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+								.andReturn();
+		mediaRepository.deleteById(resultPaths[1]);
 	}
 	
 	@AfterEach

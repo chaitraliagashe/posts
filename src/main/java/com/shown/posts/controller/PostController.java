@@ -1,5 +1,7 @@
 package com.shown.posts.controller;
 
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -8,19 +10,25 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.shown.posts.model.Comment;
+import com.shown.posts.model.Media;
 import com.shown.posts.model.Post;
 import com.shown.posts.service.CommentsRepositoryService;
+import com.shown.posts.service.MediaRepositoryService;
 import com.shown.posts.service.PostRepositoryService;
 
 @RestController
@@ -33,6 +41,9 @@ public class PostController {
 
 	@Autowired
 	private CommentsRepositoryService commentService;
+	
+	@Autowired
+	private MediaRepositoryService mediaService;
 
 	@GetMapping("/posts")
 	public String greeting() {
@@ -79,7 +90,18 @@ public class PostController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Popular blog posts could not be found for ids %s", ids));
 		}
 	}
-
+	
+	@GetMapping("/posts/getMediaById")
+	public Media getMediaById(@RequestParam(value = "id") String id) {
+		try {
+			return mediaService.getMedia(id);
+			
+		} catch(Exception e) {
+			logger.error("Error finding the blog", e);
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Media could not be found for id %s", id));
+		}
+	}
+	
 	@ResponseStatus(HttpStatus.CREATED) // 201
 	@PostMapping("/posts/create")
 	public Post createPost(@RequestBody Post post) {
@@ -152,5 +174,18 @@ public class PostController {
 			logger.error("Can not delete someone else's comments", e);
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
 		} 
+	}
+	
+	@ResponseStatus(HttpStatus.CREATED) // 201
+	@RequestMapping(path = "/posts/uploadMediaByPostId", method = POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+	public String uploadMediaByPostId(@RequestParam(value = "postId") String postId, @RequestParam("title") String title, 
+			  @RequestPart MultipartFile content) {
+		try {
+			String id = mediaService.addMedia(postId, title, content);
+			return "Id:" + id;
+		} catch(Exception e) {
+			logger.error("Error finding the blog", e);
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Media could not be found for id %s", postId));
+		}
 	}
 }

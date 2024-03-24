@@ -1,20 +1,20 @@
-db.createCollection("comments", {
+db.createCollection("media", {
    validator: {
       $jsonSchema: {
          bsonType: "object",
          title: "Comment Object Validation",
-         required: [ "post_id", "author_id", "contents", "creation_ts"],
+         required: [ "post_id", "title", "contents", "creation_ts"],
          properties: {
             post_id: {
                bsonType: "string",
                description: "post id must be a string and is required"
             },
-            author_id: {
+            title: {
                bsonType: "string",
                description: "author id must be a string and is required"
             },
             contents: {
-               bsonType: "string",
+               bsonType: "binData",
                description: "content must be string",
             },
             creation_ts: {
@@ -26,4 +26,4 @@ db.createCollection("comments", {
    }
 } );
 
-db.comments.createIndex({ post_id : 1});
+db.media.createIndex({ post_id : 1});
