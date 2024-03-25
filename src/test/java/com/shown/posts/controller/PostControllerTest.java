@@ -79,6 +79,7 @@ class PostControllerTest {
 		addedPost.setAuthorName("random user new");
 		mvc.perform(post("/posts/update")
 				.contentType(MediaType.APPLICATION_JSON)
+				.param("userId", addedPost.getAuthorId())
 				.content(objectMapper.writeValueAsBytes(addedPost))
 				.header("X-API-KEY", "9H3hyCBR"))
 			.andExpect(status().isOk())
@@ -87,7 +88,10 @@ class PostControllerTest {
 
 	@Test
 	void testDeletePost() throws Exception {
-		mvc.perform(delete("/posts/delete").param("id", addedPost.getId()).contentType(MediaType.APPLICATION_JSON).header("X-API-KEY", "9H3hyCBR"));
+		mvc.perform(delete("/posts/delete")
+				.param("id", addedPost.getId())
+				.param("userId", addedPost.getAuthorId())
+				.contentType(MediaType.APPLICATION_JSON).header("X-API-KEY", "9H3hyCBR"));
 		assertEquals(Optional.empty(), postRepository.findById(addedPost.getId()));
 	}
 	

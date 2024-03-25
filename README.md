@@ -22,10 +22,10 @@ The blogs, comments and the media files are stored in 3 different collections in
 2. comments
 3. media
 
-Since MondoDB does not enforce the Foreign key constraints, they can not be checked on database side. However, they will be checked in the microservice.
 Since the media files in the blogs can be large, they would be uploaded by a separate call to the *uploadMediaByPostId* api. This API returns the id of the media record created. The front end should then call the *update* api with media reference added as part of content.
 
 ## Limitations
 1. Currently the media is stored in a separate collection in MongoDB. If we want to store really large files, we should store them in GridFS or in a large setup, in a object store like S3. This was not part of initial requirements, and also not feasible within the timeframe and limited resources. However, the application is designed to handle this with minimal changes.
 2. Currently, comments are not part of user engagement, but this can be achieved by passing the comments data periodically to the engagement service. 
 3. Also, comments handling is not done as a separate microservice, but that can be done in future releases, making it possible to perform NLP operations to get user sentiments about the blog posts.
+4. The current code relied on the front end to prevent the users from updating/ deleting the posts that they have not written.

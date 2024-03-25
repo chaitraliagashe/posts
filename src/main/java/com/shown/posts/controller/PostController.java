@@ -115,8 +115,12 @@ public class PostController {
 
 	@ResponseStatus(HttpStatus.OK) // 201
 	@PostMapping("/posts/update")
-	public Post updatePost(@RequestBody Post post) {
+	public Post updatePost(@RequestParam(value = "userId") String userId, @RequestBody Post post) {
 		post.setUpdateTs(LocalDateTime.now());
+		if(!post.getAuthorId().equals(userId)) {
+			logger.error("Can not update someone else's blog post");
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Can not update posts that you have not written");
+		}
 		try {
 			return postService.createOrUpdatePost(post);
 		} catch (DataIntegrityViolationException e) {
@@ -127,10 +131,13 @@ public class PostController {
 
 	@ResponseStatus(HttpStatus.NO_CONTENT) // 204
 	@DeleteMapping("/posts/delete")
-	public void delete(@RequestParam(value = "id") String id) {
+	public void delete(@RequestParam(value = "userId") String userId, @RequestParam(value = "id") String id) {
 		try {
+			postService.delete(userId, id);
 			commentService.deleteCommentByPostId(id);
-			postService.delete(id);
+		} catch(AuthorizationServiceException e) {
+			logger.error("Can not delete someone else's post", e);
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
 		} catch (Exception e) {
 			logger.error("Can not delete the blog post", e);
 		}
