@@ -1,4 +1,4 @@
-curl -X POST -H "Content-Type: application/json" -d '{"authorId": "testUser", "authorName": "Test User","contents": [{"text": "This is a trial text blog"}, {"text": "This does not content more informatio"}],"creation_ts": "2024-03-17T00:52:14.591646600", "update_ts": "2024-03-17T00:52:14.591646600", "title": "Test Blog"}' "http://localhost:8080/posts/create"
+curl -X POST -H "Content-Type: application/json" -d '{"authorId": "testUser", "authorName": "Test User","contents": [{"text": "This is a trial text blog"}, {"text": "This does not content more information"}], "title": "Test Blog"}' "http://localhost:8080/posts/create"
 
 curl -X GET -H 'Content-Type: application/json' -H 'Accept: application/json' -i 'http://localhost:8080/posts/getPostsFromAuthor?authorName=Test%20User'
 
